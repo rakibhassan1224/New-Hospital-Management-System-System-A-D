@@ -9,7 +9,6 @@ if (!process.env.NEXTAUTH_SECRET) {
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET || "your-super-secret-key-that-is-at-least-32-chars-long",
-  trustHost: true,
   session: {
     strategy: "jwt",
   },
