@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   // "ADMIN", "DOCTOR", "RECEPTIONIST", "PATIENT"
+  createdAt DateTime @default(now())
+  
+  doctorProfile Doctor?
+  patientProfile Patient?
+}
+
+model Patient {
+  id          String   @id @default(cuid())
+  userId      String?  @unique
+  fullName    String
+  icNumber    String   @unique
+  dob         DateTime
+  gender      String
+  phone       String
+  address     String?
+  bloodType   String?
+  allergies   String?
+  createdAt   DateTime @default(now())
+
+  user        User?    @relation(fields: [userId], references: [id])
+  appointments Appointment[]
+  labTests     LabTest[]
+  pharmacyOrders PharmacyOrder[]
+}
+
+model Department {
+  id   String @id @default(cuid())
+  name String @unique
+
+  doctors Doctor[]
+}
+
+model Doctor {
+  id             String @id @default(cuid())
+  userId         String @unique
+  name           String
+  specialization String
+  departmentId   String
+  availability   String // e.g., "Mon-Fri 9AM-5PM"
+
+  user         User         @relation(fields: [userId], references: [id])
+  department   Department   @relation(fields: [departmentId], references: [id])
+  appointments Appointment[]
+  labTests     LabTest[]
+  pharmacyOrders PharmacyOrder[]
+}
+
+model Appointment {
+  id        String   @id @default(cuid())
+  patientId String
+  doctorId  String
+  date      DateTime
+  time      String   // e.g., "10:00"
+  status    String   // "SCHEDULED", "COMPLETED", "CANCELLED", "NO_SHOW"
+  reason    String?
+  createdAt DateTime @default(now())
+
+  patient Patient @relation(fields: [patientId], references: [id])
+  doctor  Doctor  @relation(fields: [doctorId], references: [id])
+
+  medicalRecord MedicalRecord?
+  invoice       Invoice?
+}
+
+model MedicalRecord {
+  id            String   @id @default(cuid())
+  appointmentId String   @unique
+  diagnosis     String
+  prescription  String?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  appointmentId String   @unique
+  amount        Float
+  status        String   // "PAID", "UNPAID"
+  createdAt     DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model LabTest {
+  id            String   @id @default(cuid())
+  patientId     String
+  doctorId      String
+  testName      String
+  result        String?
+  status        String   // "PENDING", "COMPLETED"
+  createdAt     DateTime @default(now())
+
+  patient Patient @relation(fields: [patientId], references: [id])
+  doctor  Doctor  @relation(fields: [doctorId], references: [id])
+}
+
+model PharmacyOrder {
+  id            String   @id @default(cuid())
+  patientId     String
+  doctorId      String
+  medication    String
+  dosage        String
+  status        String   // "PENDING", "DISPENSED"
+  createdAt     DateTime @default(now())
+
+  patient Patient @relation(fields: [patientId], references: [id])
+  doctor  Doctor  @relation(fields: [doctorId], references: [id])
+}
