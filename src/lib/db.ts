@@ -10,7 +10,7 @@ let prisma: PrismaClient;
 if (typeof window === "undefined") {
   let dbUrl = 'file:./dev.db';
   
-  if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV) {
+  if (process.env.NODE_ENV === 'production') {
     // Copy the database to /tmp on Vercel so it can be written to
     const tmpPath = '/tmp/dev.db';
     try {
