@@ -11,7 +11,7 @@ async function main() {
     console.log("No departments found, creating default ones...");
     const depts = ["Cardiology", "Neurology", "Pediatrics", "Orthopedics", "General Medicine", "Emergency"];
     for (const d of depts) {
-      await prisma.department.create({ data: { name: d, description: `${d} department` } });
+      await prisma.department.create({ data: { name: d } });
     }
     departments = await prisma.department.findMany();
   }

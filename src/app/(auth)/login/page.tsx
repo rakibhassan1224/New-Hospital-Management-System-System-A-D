@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { LoginForm } from "./LoginForm";
 import Image from "next/image";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Login | City Care Hospital Management System",
@@ -43,7 +44,9 @@ export default function LoginPage() {
             <Image src="/logo.png" alt="City Care Logo" width={48} height={48} className="rounded-lg shadow-sm" />
             <span>City Care Hospital Management System</span>
           </div>
-          <LoginForm />
+          <Suspense fallback={<div>Loading form...</div>}>
+            <LoginForm />
+          </Suspense>
         </div>
       </div>
     </div>

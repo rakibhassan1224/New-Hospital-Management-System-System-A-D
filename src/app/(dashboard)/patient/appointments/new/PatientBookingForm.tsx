@@ -27,7 +27,8 @@ export function PatientBookingForm({ patientId, doctors }: { patientId: string, 
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (name: string, value: string) => {
+  const handleSelectChange = (name: string, value: string | null) => {
+    if (value === null) return;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
